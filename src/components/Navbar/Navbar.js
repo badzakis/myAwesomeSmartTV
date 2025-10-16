@@ -30,7 +30,8 @@ export default class Navbar extends lng.Component {
     this.tag("Items").items = this._items.map((it, idx) => ({
       type: NavItem,
       x: idx * 200,
-      item: it,
+      // Label: { text: { text: it.label, fontSize: 28 } },
+      // Under: { y: 34, rect: true, w: 0, h: 4, color: 0xffffffff, alpha: 0.9 },
     }));
     console.log(this._items);
   }
@@ -55,7 +56,7 @@ export default class Navbar extends lng.Component {
   }
   _handleDown() {
     // Drop focus back to page content zone
-    this.fireAncestors("$focusContentZone");
+    this.fireAncestors("$focusContentZone", { row: -1 });
     return true;
   }
   _handleEnter() {

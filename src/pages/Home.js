@@ -80,6 +80,11 @@ export default class Home extends Lightning.Component {
     if (this._rowIndex < this._rows.length - 1) {
       this._rowIndex++;
       this._refocus();
+
+      // } else {
+      //   // sa poslednjeg reda dole možeš da odlučiš šta želiš (npr. opet sidebar)
+      //   return this.$focusSidebar();
+      // }
     } else {
       return this.$focusSidebar();
     }
@@ -105,7 +110,7 @@ export default class Home extends Lightning.Component {
   }
 
   $requestWidgetFocus(name) {
-    Router.focusWidget();
+    Router.focusWidget(name || "Menu");
   }
 
   _focusSidebar() {

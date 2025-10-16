@@ -100,7 +100,7 @@ export default class Row extends Lightning.Component {
       return true;
     }
     // početak reda → možda fokus na Navbar widget
-    return this.fireAncestors("$requestWidgetFocus", "Navbar");
+    return this.fireAncestors("$requestWidgetFocus", "Menu");
   }
 
   _handleUp() {
