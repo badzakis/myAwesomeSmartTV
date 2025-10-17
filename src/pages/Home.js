@@ -22,16 +22,10 @@ export default class Home extends Lightning.Component {
           MoviesRow: {
             type: Row,
             y: 100,
-            title: "MOVIES",
-            props: { posterW: 200, posterH: 300 },
-            items: [],
           },
           SeriesRow: {
             type: Row,
             y: 550,
-            title: "SERIES",
-            props: { posterW: 200, posterH: 300 },
-            items: [],
           },
         },
         Sidebar: {
@@ -52,7 +46,28 @@ export default class Home extends Lightning.Component {
     this._rowIndex = 0;
     this._zone = "content"; // 'content' | 'sidebar'
     this._lastRowIndex = 0;
-    this.tag("MoviesRow").items = movies;
+    this.patch({
+      Wrapper: {
+        Content: {
+          MoviesRow: {
+            props: {
+              items: movies,
+              posterW: 200,
+              posterH: 300,
+              title: "MOVIES",
+            },
+          },
+          SeriesRow: {
+            props: {
+              items: series,
+              posterW: 200,
+              posterH: 300,
+              title: "SERIES",
+            },
+          },
+        },
+      },
+    });
     this.tag("SeriesRow").items = series;
     this.tag("Sidebar").items = channels.slice(0, 5);
   }
@@ -85,9 +100,10 @@ export default class Home extends Lightning.Component {
       //   // sa poslednjeg reda dole možeš da odlučiš šta želiš (npr. opet sidebar)
       //   return this.$focusSidebar();
       // }
-    } else {
-      return this.$focusSidebar();
     }
+    //  else {
+    //   return this.$focusSidebar();
+    // }
   }
 
   $focusNextZone() {

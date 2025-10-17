@@ -22,18 +22,17 @@ export default class Navbar extends lng.Component {
 
   _init() {
     this._i = 0;
-    this.items = DEFAULT_ITEMS;
   }
 
   set items(arr) {
-    this._items = arr || DEFAULT_ITEMS;
-    this.tag("Items").items = this._items.map((it, idx) => ({
+    this.tag("Items").items = this.items.map((it, idx) => ({
       type: NavItem,
       x: idx * 200,
-      // Label: { text: { text: it.label, fontSize: 28 } },
-      // Under: { y: 34, rect: true, w: 0, h: 4, color: 0xffffffff, alpha: 0.9 },
+      item: it,
+      Label: {
+        text: this.items.label,
+      },
     }));
-    console.log(this._items);
   }
 
   _getFocused() {
@@ -56,7 +55,7 @@ export default class Navbar extends lng.Component {
   }
   _handleDown() {
     // Drop focus back to page content zone
-    this.fireAncestors("$focusContentZone", { row: -1 });
+    this.fireAncestors("$focusContentZone");
     return true;
   }
   _handleEnter() {

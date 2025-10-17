@@ -2,57 +2,77 @@ import { Lightning } from "@lightningjs/sdk";
 import PosterCard from "../PosterCard/PosterCard.js";
 
 export default class Row extends Lightning.Component {
+  _index = 0;
   _props = {
     posterW: 100,
     posterH: 100,
+    items: [],
+    title: "",
+    width: 1920,
+    height: 500,
+    itemsWidht: 1760,
+    itemsHeight: 480,
+    pLeft: 30,
+    gap: 10,
+    cardW: 220,
+    cardH: 320,
   };
+
   static _template() {
     return {
-      w: 1920,
-      h: 500,
-      Title: { x: 100, y: 40, text: { text: "", fontSize: 26 }, alpha: 0.8 },
+      Title: {
+        x: 100,
+        y: 40,
+        Text: { fontSize: 26 },
+        alpha: 0.8,
+        visible: false,
+      },
       List: {
         x: 80,
         y: 75,
-        w: 1920 - 160,
-        h: 480,
         clipping: true,
         Wrapper: { x: 0, y: 0 },
       },
     };
   }
 
-  _init() {
-    this.pLeft = 30;
-    this._index = 0;
-    this._gap = 10;
-    this._cardW = 220;
-    this._cardH = 320;
-  }
-
   set props(props) {
     // console.warn("ROW PROPS BEFORE: ", this._props);
     this._props = { ...this._props, ...props };
     // console.warn("ROW PROPS AFTER: ", this._props);
-  }
+    const { width, height, title, itemsWidht, itemsHeight, items } =
+      this._props;
+    this.patch({
+      w: width,
+      h: height,
+      Title: {
+        ...(title && {
+          Text: {
+            text: title,
+          },
+          visible: true,
+        }),
+      },
+      List: {
+        w: itemsWidht,
+        h: itemsHeight,
+        ...(!title && {
+          x: 0,
+          y: 0,
+        }),
+      },
+    });
 
-  set title(v) {
-    this.tag("Title").text.text = v || "";
-  }
-
-  set items(arr) {
-    this._items = arr || [];
-    this.tag("Wrapper").children = this._items.map((item, i) => ({
+    this.tag("Wrapper").children = items.map((item, i) => ({
       type: PosterCard,
-      x: this.pLeft + i * (this._cardW + this._gap),
-      item: item,
+      x: this._props.pLeft + i * (this._props.cardW + this._props.gap),
+      item,
       props: {
         width: this._props.posterW,
         height: this._props.posterH,
         imageSrc: item.poster,
       },
     }));
-    // console.warn("ITEMS MAP:", this._items);
   }
 
   get _wrapper() {
@@ -66,7 +86,7 @@ export default class Row extends Lightning.Component {
   }
 
   _getFocused() {
-    return this._cards[this._index];
+    return this.tag("Wrapper").children[this._index];
   }
 
   _updateX() {
