@@ -4,6 +4,7 @@ import Column from "../components/Column/Column.js";
 import { movies } from "../data/movies.js";
 import { series } from "../data/series.js";
 import { channels } from "../data/channels.js";
+import PosterCard from "../components/PosterCard/PosterCard.js";
 
 export default class Home extends Lightning.Component {
   static _template() {
@@ -51,7 +52,16 @@ export default class Home extends Lightning.Component {
         Content: {
           MoviesRow: {
             props: {
-              items: movies,
+              items: movies.map((item, i) => ({
+                type: PosterCard,
+                x: 20 + i * (220 + 10),
+                item,
+                props: {
+                  width: 200,
+                  height: 300,
+                  imageSrc: item.poster,
+                },
+              })),
               posterW: 200,
               posterH: 300,
               title: "MOVIES",
@@ -59,7 +69,16 @@ export default class Home extends Lightning.Component {
           },
           SeriesRow: {
             props: {
-              items: series,
+              items: series.map((item, i) => ({
+                type: PosterCard,
+                x: 20 + i * (220 + 10),
+                item,
+                props: {
+                  width: 200,
+                  height: 300,
+                  imageSrc: item.poster,
+                },
+              })),
               posterW: 200,
               posterH: 300,
               title: "SERIES",

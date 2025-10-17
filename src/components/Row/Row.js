@@ -63,16 +63,7 @@ export default class Row extends Lightning.Component {
       },
     });
 
-    this.tag("Wrapper").children = items.map((item, i) => ({
-      type: PosterCard,
-      x: this._props.pLeft + i * (this._props.cardW + this._props.gap),
-      item,
-      props: {
-        width: this._props.posterW,
-        height: this._props.posterH,
-        imageSrc: item.poster,
-      },
-    }));
+    this.tag("Wrapper").children = items;
   }
 
   get _wrapper() {

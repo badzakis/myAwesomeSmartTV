@@ -1,4 +1,4 @@
-import { Lightning as lng, Router } from "@lightningjs/sdk";
+import { Lightning as lng, Router, Utils } from "@lightningjs/sdk";
 import NavItem from "./Navbaritem.js";
 import Row from "../Row/Row.js";
 
@@ -14,25 +14,50 @@ export default class Navbar extends lng.Component {
     return {
       x: 60,
       y: 20,
+      w: 1920,
+      h: 120,
+      Logo: {
+        rect: true,
+        w: 302,
+        h: 60,
+        y: 20,
+        src: Utils.asset("images/shindirilogo.png"),
+      },
       Items: {
+        x: 312,
+        y: 20,
         type: Row,
       },
     };
   }
 
   _init() {
-    this._i = 0;
+    this.patch({
+      Items: {
+        props: {
+          items: DEFAULT_ITEMS.map((item, i) => ({
+            type: NavItem,
+            x: 20 + i * (180 + 10),
+            item,
+            props: {
+              title: item.title,
+              label: item.label,
+            },
+          })),
+        },
+      },
+    });
   }
 
   set items(arr) {
-    this.tag("Items").items = this.items.map((it, idx) => ({
+    this._items = arr || DEFAULT_ITEMS;
+    this.tag("Items").items = this._items.map((it, idx) => ({
       type: NavItem,
       x: idx * 200,
       item: it,
-      Label: {
-        text: this.items.label,
-      },
+      Title: {},
     }));
+    console.log(this._items[0]);
   }
 
   _getFocused() {
@@ -55,7 +80,7 @@ export default class Navbar extends lng.Component {
   }
   _handleDown() {
     // Drop focus back to page content zone
-    this.fireAncestors("$focusContentZone");
+    this.fireAncestors("$focusContentZone", { row: 0 });
     return true;
   }
   _handleEnter() {
