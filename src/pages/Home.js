@@ -104,7 +104,6 @@ export default class Home extends Lightning.Component {
     if (this._rowIndex === 0) Router.focusWidget("Menu");
     else {
       this._rowIndex--;
-      // this.application.updateFocus();
     }
     return true;
   }

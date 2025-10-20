@@ -1,6 +1,14 @@
-import { Lightning } from "@lightningjs/sdk";
+import { Lightning, Utils } from "@lightningjs/sdk";
 export default class Live extends Lightning.Component {
   static _template() {
-    return { Label: { x: 80, y: 80, text: { text: "LIVE" } } };
+    return {
+      Background: {
+        rect: true,
+        w: 1920,
+        h: 1080,
+        src: Utils.asset("images/background.png"),
+      },
+      Label: { x: 400, y: 400, text: { text: "LIVE" } },
+    };
   }
 }

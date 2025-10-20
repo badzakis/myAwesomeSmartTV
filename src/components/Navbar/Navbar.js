@@ -31,6 +31,27 @@ export default class Navbar extends lng.Component {
     };
   }
 
+  // _logFocusPath(tag = "?") {
+  //   const app = this.stage?.application || this.application;
+  //   const path = (app.focusPath || app._focusPath || []).map(
+  //     (c) => c.constructor?.name
+  //   );
+  //   console.warn(`[${tag}] Focus →`, path.join(" > "));
+  // }
+
+  // zovi u _init() i u _captureEnter/_handleEnter:
+
+  // _captureEnter() {
+  //   this._logFocusPath(this.constructor.name);
+  //   console.warn(`[${this.constructor.name}] capture ENTER`);
+  //   return false;
+  // }
+  // _handleEnter() {
+  //   this._logFocusPath(this.constructor.name);
+  //   console.warn(`[${this.constructor.name}] handle ENTER`);
+  //   return true;
+  // }
+
   _init() {
     this.patch({
       Items: {
@@ -47,6 +68,9 @@ export default class Navbar extends lng.Component {
         },
       },
     });
+    // this._logFocusPath(this.constructor.name);
+
+    // console.error(this.tag("Items")._props.items);
   }
 
   set items(arr) {
@@ -85,7 +109,27 @@ export default class Navbar extends lng.Component {
   }
 
   // _handleEnter() {
-  //   console.warn("jaguar boooog!!!@#!@#!@3");
+  //   console.error("handle Event iz Navbar. js!!!");
   //   return false;
   // }
+  _handleEnter() {
+    //! 1) uzmi indeks iz Row-a
+    const row = this.tag("Items");
+    const idx = row?._index ?? 0;
+
+    //! 2) tvoji "items" su u Row propsima, a podaci su u conf.item
+    const conf = row?._props?.items?.[idx];
+    const data = conf?.item || conf; // fallback ako nekad pošalješ čiste podatke
+    const path = data?.path;
+
+    //! 3) navigacija
+    if (path) {
+      Router.navigate(path);
+    } else {
+      console.warn("[Navbar] nema path za idx", idx, data);
+    }
+
+    //! 4) PRESECI DALJE PROPAGIRANJE!
+    return true;
+  }
 }

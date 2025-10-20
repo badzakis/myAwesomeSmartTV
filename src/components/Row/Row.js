@@ -118,11 +118,7 @@ export default class Row extends Lightning.Component {
     return this.fireAncestors("$focusRowDown");
   }
 
-  _handleEnter() {
-    const item = this._items[this._index];
-    console.log(item);
-    // npr. idi na Movies detalj, ili što već
-    Router.navigate(`movie/${slugify(item.title)}`);
-    return true;
-  }
+  // _handleEnter() {
+  //   console.warn(this.parent.ref);
+  // }
 }
