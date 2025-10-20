@@ -120,9 +120,6 @@ export default class Home extends Lightning.Component {
       //   return this.$focusSidebar();
       // }
     }
-    //  else {
-    //   return this.$focusSidebar();
-    // }
   }
 
   $focusNextZone() {

@@ -53,10 +53,11 @@ export default class NavItem extends lng.Component {
     };
 
     const { label, x, selected } = props;
+    console.log(props);
 
     this._Title.patch({
       text: {
-        textColor: Colors(selected ? "#FFFFFF" : "#575757").get(),
+        textColor: Colors(selected ? "#FFFFFF" : "green").get(),
       },
     });
 
@@ -72,6 +73,7 @@ export default class NavItem extends lng.Component {
     this._Line.visible = true;
     this.tag("Line").setSmooth("w", 150);
     this.patch({ smooth: { scale: 1.05 } });
+    console.log(this.title);
   }
   _unfocus() {
     this._Line.visible = false;

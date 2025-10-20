@@ -57,7 +57,6 @@ export default class Navbar extends lng.Component {
       item: it,
       Title: {},
     }));
-    console.log(this._items[0]);
   }
 
   _getFocused() {
@@ -80,12 +79,13 @@ export default class Navbar extends lng.Component {
   }
   _handleDown() {
     // Drop focus back to page content zone
-    this.fireAncestors("$focusContentZone", { row: 0 });
+    // this.fireAncestors("$focusContentZone");
+    Router.focusPage();
     return true;
   }
-  _handleEnter() {
-    const { path } = this._items[this._i];
-    if (path) Router.navigate(path);
-    return true;
-  }
+
+  // _handleEnter() {
+  //   console.warn("jaguar boooog!!!@#!@#!@3");
+  //   return false;
+  // }
 }

@@ -90,10 +90,7 @@ export default class Row extends Lightning.Component {
     if (this._index < this._cards.length - 1) {
       this._index++;
       this._updateX();
-      console.log("INDEX CHANGE", {
-        idx: this._index,
-        type: this.constructor.name,
-      });
+
       return true;
     }
     // kraj reda → pusti roditelju da reši (npr. fokus na Sidebar)
@@ -104,37 +101,28 @@ export default class Row extends Lightning.Component {
     if (this._index > 0) {
       this._index--;
       this._updateX();
-      console.log("INDEX CHANGE", {
-        idx: this._index,
-        type: this.constructor.name,
-      });
       return true;
     }
     // početak reda → možda fokus na Navbar widget
-    return this.fireAncestors("$requestWidgetFocus", "Menu");
   }
 
   _handleUp() {
-    console.log("INDEX CHANGE", {
-      idx: this._index,
-      type: this.constructor.name,
-    });
-    // roditelj (Home) odlučuje koji sledeći red da uzme
     return this.fireAncestors("$focusRowUp");
   }
 
   _handleDown() {
-    console.log("INDEX CHANGE", {
-      idx: this._index,
-      type: this.constructor.name,
-    });
+    if (this.parent.ref === "Menu") {
+      return false;
+    }
+
     return this.fireAncestors("$focusRowDown");
   }
 
   _handleEnter() {
     const item = this._items[this._index];
+    console.log(item);
     // npr. idi na Movies detalj, ili što već
-    // Router.navigate(`movie/${slugify(item.title)}`)
+    Router.navigate(`movie/${slugify(item.title)}`);
     return true;
   }
 }
