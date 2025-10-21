@@ -55,7 +55,7 @@ export default class NavItem extends lng.Component {
 
     this._Title.patch({
       text: {
-        textColor: Colors(selected ? "#FFFFFF" : "").get(),
+        textColor: Colors(selected ? "#b82020" : "#f0f2f5ff").get(),
       },
     });
 
