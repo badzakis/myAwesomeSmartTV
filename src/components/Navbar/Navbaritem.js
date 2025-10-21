@@ -1,4 +1,4 @@
-import { Lightning as lng, Colors } from "@lightningjs/sdk";
+import { Lightning as lng, Colors, Router } from "@lightningjs/sdk";
 
 export default class NavItem extends lng.Component {
   static _template() {
@@ -22,7 +22,7 @@ export default class NavItem extends lng.Component {
         },
       },
       Line: {
-        y: 34,
+        y: 40,
         w: 150,
         h: 5,
         rect: true,
@@ -56,7 +56,7 @@ export default class NavItem extends lng.Component {
 
     this._Title.patch({
       text: {
-        textColor: Colors(selected ? "#FFFFFF" : "#FFFFFF").get(),
+        textColor: Colors(selected ? "#FFFFFF" : "").get(),
       },
     });
 
@@ -69,13 +69,20 @@ export default class NavItem extends lng.Component {
     }
   }
   _focus() {
+    // this.Title(true);
     this._Line.visible = true;
     this.tag("Line").setSmooth("w", 150);
     this.patch({ smooth: { scale: 1.05 } });
   }
   _unfocus() {
+    // this.Title(false);
+
     this._Line.visible = false;
     this.tag("Line").setSmooth("w", 0);
     this.patch({ smooth: { scale: 1.0 } });
+  }
+
+  _handleEnter() {
+    Router.navigate(this._props.path);
   }
 }
