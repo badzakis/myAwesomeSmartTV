@@ -13,7 +13,6 @@ export default class NavItem extends lng.Component {
         text: {
           text: "Title",
           fontSize: 24,
-          fontFace: "Montserrat-Bold",
           lineHeight: 40,
           maxLines: 1,
           wordWrapWidth: 150,

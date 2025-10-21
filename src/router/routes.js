@@ -1,6 +1,6 @@
 import Home from "../pages/Home.js";
 import Live from "../pages/Live.js";
-import Movies from "../pages/Movies.js";
+import Movies from "../pages/Movies/Movies.js";
 import Settings from "../pages/Settings.js";
 
 export default {
