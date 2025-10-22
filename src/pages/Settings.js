@@ -22,9 +22,7 @@ export default class Settings extends Lightning.Component {
   _getFocused() {
     return this.tag("BackButton"); // default fokus na dugme
   }
-  _init() {
-    console.log(this._getFocused());
-  }
+
   // enter na dugme → nazad na home
   _handleEnter() {
     Router.navigate("home");

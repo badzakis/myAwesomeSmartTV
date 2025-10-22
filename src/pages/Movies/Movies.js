@@ -61,8 +61,6 @@ export default class Movies extends Lightning.Component {
   set props(props) {
     this._props = { ...this._props, ...props };
 
-    console.log(this._props);
-
     this._MovieList.patch({
       props: {
         h: 302,
@@ -78,6 +76,7 @@ export default class Movies extends Lightning.Component {
             title: item.title,
             trailerSrc: item.trailer_src,
             description: item.description,
+            itemId: item.id,
           },
         })),
       },

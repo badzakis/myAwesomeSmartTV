@@ -52,10 +52,7 @@ export default class Column extends Lightning.Component {
   _handleDown() {
     if (this._index < this._cards.length - 1) {
       this._index++;
-      // console.log("INDEX CHANGE", {
-      //   idx: this._index,
-      //   type: this.constructor.name,
-      // });
+
       return true;
     }
     return this.fireAncestors("$focusRowDown");

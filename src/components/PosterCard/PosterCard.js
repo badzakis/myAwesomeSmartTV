@@ -1,4 +1,4 @@
-import { Lightning as lng, Utils } from "@lightningjs/sdk";
+import { Lightning as lng, Utils, Router } from "@lightningjs/sdk";
 
 export default class PosterCard extends lng.Component {
   _props = {};
@@ -114,5 +114,9 @@ export default class PosterCard extends lng.Component {
       smooth: { scale: 1.0 },
       FocusRing: { alpha: 0 },
     });
+  }
+
+  _handleEnter() {
+    this._props.itemId && Router.navigate(`details/${this._props.itemId}`);
   }
 }

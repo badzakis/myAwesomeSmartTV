@@ -83,5 +83,6 @@ export default class NavItem extends lng.Component {
 
   _handleEnter() {
     Router.navigate(this._props.path);
+    Router.focusPage();
   }
 }
