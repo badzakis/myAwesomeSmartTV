@@ -51,9 +51,7 @@ export default class PosterCard extends lng.Component {
   }
 
   set props(props) {
-    // console.warn("PROPS BEFORE: ", this._props);
     this._props = { ...this._props, ...props };
-    // console.error("PROPS AFTER: ", this._props);
 
     const { width, height, imageSrc, title } = this._props;
 

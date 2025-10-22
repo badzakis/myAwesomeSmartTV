@@ -21,30 +21,35 @@ export default class Movies extends Lightning.Component {
         },
         y: 260,
         BackButton: {
+          y: -200,
+          x: 100,
           collision: true,
           type: BackBtn,
         },
         Title: {
+          y: -100,
+          x: 100,
           text: {
-            fontSize: 28,
+            fontSize: 44,
             lineHeight: 30,
             textColor: Colors("#FFFFFF").get(),
           },
         },
         Description: {
-          x: 50,
+          y: -50,
+          x: 100,
           text: {
-            fontSize: 22,
+            fontSize: 28,
             lineHeight: 31,
             wordWrapWidth: 698,
             textColor: Colors("#FFFFFF").get(),
           },
         },
         Poster: {
-          x: 1400,
-          y: -200,
-          w: 100,
-          h: 200,
+          x: 1080,
+          y: -720,
+          w: 460,
+          h: 770,
         },
       },
     };
