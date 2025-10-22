@@ -17,7 +17,6 @@ export default async function (page) {
     movieList: movies.map((item) => {
       return {
         image_src: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
-        item_title: item.original_title,
         margin_left: 12,
         margin_right: 12,
         margin_top: 10,

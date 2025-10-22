@@ -1,5 +1,7 @@
-import { Lightning, Utils, Colors } from "@lightningjs/sdk";
+import { Lightning, Utils, Colors, Router } from "@lightningjs/sdk";
 import Row from "../../components/Row/Row";
+import PosterCard from "../../components/PosterCard/PosterCard";
+
 export default class Movies extends Lightning.Component {
   static _template() {
     return {
@@ -9,23 +11,21 @@ export default class Movies extends Lightning.Component {
         rect: true,
         w: 1920,
         h: 1080,
-        // src: Utils.asset("images/background.png"),
-        color: Colors("#34663b").get(),
+        color: Colors("#222351").get(),
       },
       MovieBg: {
         rect: true,
         w: 1920,
-        h: 697,
-        colorRight: Colors("#151515").get(),
-        colorLeft: Colors("#151515").get(),
-        colorTop: Colors("#ac2626").get(),
-        colorBottom: Colors("#ac2626").get(),
+        h: 620,
+        colorRight: Colors("#737481").get(),
+        colorLeft: Colors("#737481").get(),
+        colorTop: Colors("#737481").get(),
+        colorBottom: Colors("#737481").get(),
       },
       Details: {
         flex: {
           direction: "column",
         },
-        x: 70,
         y: 260,
         Title: {
           text: {
@@ -35,6 +35,7 @@ export default class Movies extends Lightning.Component {
           },
         },
         Description: {
+          x: 50,
           text: {
             fontSize: 22,
             lineHeight: 31,
@@ -45,22 +46,56 @@ export default class Movies extends Lightning.Component {
       },
       MoviesList: {
         type: Row,
-        x: 69,
-        y: 697,
-        props: {
-          h: 302,
-          w: 1792,
-        },
+        x: 50,
+        y: 620,
       },
     };
   }
 
+  _init() {
+    this._rows = [this.tag("Movieslist")];
+    this._rowIndex = 0;
+    this._zone = "content"; // 'content' | 'sidebar'
+    this._lastRowIndex = 0;
+  }
+  set props(props) {
+    this._props = { ...this._props, ...props };
+
+    console.log(this._props);
+
+    this._MovieList.patch({
+      props: {
+        h: 302,
+        w: 1792,
+        items: this._props.movieList.map((item, i) => ({
+          type: PosterCard,
+          x: 20 + i * (220 + 10),
+          item,
+          props: {
+            width: 200,
+            height: 300,
+            imageSrc: item.image_src,
+            title: item.title,
+            trailerSrc: item.trailer_src,
+            description: item.description,
+          },
+        })),
+      },
+    });
+  }
+
+  $focusRowUp() {
+    if (this._zone !== "content") return true;
+    if (this._rowIndex === 0) Router.focusWidget("Menu");
+    else {
+      this._rowIndex--;
+    }
+    return true;
+  }
   get _MovieBg() {
     return this.tag("MovieBg");
   }
-  get _Details() {
-    return this.tag("Details");
-  }
+
   get _Title() {
     return this.tag("Title");
   }
@@ -68,6 +103,21 @@ export default class Movies extends Lightning.Component {
     return this.tag("Description");
   }
   get _MovieList() {
-    return this.tag("MovieList");
+    return this.tag("MoviesList");
+  }
+
+  $changeBackground(src, desc) {
+    this._MovieBg.patch({
+      src,
+    });
+    this._Description.patch({
+      text: {
+        text: desc,
+      },
+    });
+  }
+
+  _getFocused() {
+    return this._MovieList;
   }
 }

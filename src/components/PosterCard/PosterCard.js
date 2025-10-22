@@ -37,7 +37,14 @@ export default class PosterCard extends lng.Component {
       Title: {
         y: height,
         x: 0,
-        text: { text: "", fontSize: 22 },
+        text: {
+          text: "",
+          fontSize: 22,
+          wordWrap: true,
+          wordWrapWidth: width,
+          maxLines: 2,
+          maxLinesSuffix: "...",
+        },
         alpha: 0.7,
       },
     };
@@ -48,7 +55,7 @@ export default class PosterCard extends lng.Component {
     this._props = { ...this._props, ...props };
     // console.error("PROPS AFTER: ", this._props);
 
-    const { width, height, imageSrc } = this._props;
+    const { width, height, imageSrc, title } = this._props;
 
     this.patch({
       width,
@@ -71,11 +78,12 @@ export default class PosterCard extends lng.Component {
         h: height,
         x: 4,
         y: 4,
-        src: Utils.asset(imageSrc),
+        src: imageSrc,
         shader: { type: lng.shaders.RoundedRectangle, radius: 8 },
       },
       Title: {
         y: height + 12,
+        ...(title && { text: title }),
       },
     });
   }
@@ -92,12 +100,13 @@ export default class PosterCard extends lng.Component {
       smooth: { scale: 1.06 },
       FocusRing: { alpha: 1 },
     });
-    // console.log("FOCUS ENTER", {
-    //   type: this.constructor.name,
-    //   idx: this._index,
-    //   rowIdx: this._rowIndex,
-    //   path: this.parent?.constructor?.name,
-    // });
+
+    this._props.trailerSrc &&
+      this.fireAncestors(
+        "$changeBackground",
+        this._props.trailerSrc,
+        this._props.description
+      );
   }
 
   _unfocus() {
@@ -105,11 +114,5 @@ export default class PosterCard extends lng.Component {
       smooth: { scale: 1.0 },
       FocusRing: { alpha: 0 },
     });
-    // console.log("FOCUS EXIT", {
-    //   type: this.constructor.name,
-    //   idx: this._index,
-    //   rowIdx: this._rowIndex,
-    //   path: this.parent?.constructor?.name,
-    // });
   }
 }

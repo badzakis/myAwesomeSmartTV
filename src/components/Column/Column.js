@@ -37,7 +37,7 @@ export default class Column extends Lightning.Component {
       props: {
         width: this._cardW,
         height: this._cardH,
-        imageSrc: it.poster,
+        imageSrc: Utils.asset(it.poster),
       },
     }));
   }

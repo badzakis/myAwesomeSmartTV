@@ -59,7 +59,7 @@ export default class Home extends Lightning.Component {
                 props: {
                   width: 200,
                   height: 300,
-                  imageSrc: item.poster,
+                  imageSrc: Utils.asset(item.poster),
                 },
               })),
               posterW: 200,
@@ -76,7 +76,7 @@ export default class Home extends Lightning.Component {
                 props: {
                   width: 200,
                   height: 300,
-                  imageSrc: item.poster,
+                  imageSrc: Utils.asset(item.poster),
                 },
               })),
               posterW: 200,

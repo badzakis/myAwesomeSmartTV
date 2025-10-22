@@ -1,6 +1,7 @@
 import Home from "../pages/Home.js";
 import Live from "../pages/Live.js";
 import Movies from "../pages/Movies/Movies.js";
+import movies from "../pages/Movies/provider/movies.js";
 import Settings from "../pages/Settings.js";
 
 export default {
@@ -8,7 +9,7 @@ export default {
   routes: [
     { path: "home", component: Home, widgets: ["Menu"] },
     { path: "live", component: Live, widgets: ["Menu"] },
-    { path: "movies", component: Movies, widgets: ["Menu"] },
+    { path: "movies", component: Movies, widgets: ["Menu"], on: movies },
     { path: "settings", component: Settings },
   ],
 };
