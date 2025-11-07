@@ -15,9 +15,9 @@ export default class Movies extends Lightning.Component {
       },
       Shadow: {
         zIndex: 1,
-        colorTop: Colors("#222351").alpha(0).get(),
-        colorBottom: Colors("#222351").alpha(0).get(),
-        colorLeft: Colors("#222351").alpha(0.8).get(),
+        colorTop: Colors("#121313").alpha(0).get(),
+        colorBottom: Colors("#121313").alpha(0).get(),
+        colorLeft: Colors("#121313").alpha(0.8).get(),
         texture: lng.Tools.getShadowRect(1920, 1080, 0, 0, 0),
       },
 
@@ -52,11 +52,16 @@ export default class Movies extends Lightning.Component {
             textColor: Colors("#FFFFFF").get(),
           },
         },
-        Poster: {
-          x: 1080,
-          y: -520,
-          w: 560,
-          h: 770,
+        WatchNowBtn: {
+          x: 100,
+          y: 150,
+          text: {
+            text: "WATCH NOW >",
+            fontSize: 28,
+            lineHeight: 31,
+            wordWrapWidth: 698,
+            textColor: Colors("#FFFFFF").get(),
+          },
         },
       },
     };
@@ -85,9 +90,6 @@ export default class Movies extends Lightning.Component {
             text: description,
           },
         },
-        // Poster: {
-        //   src: imgSrc,
-        // },
       },
     });
     //   w: 960,
