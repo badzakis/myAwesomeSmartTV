@@ -12,10 +12,17 @@ export default class Movies extends Lightning.Component {
         rect: true,
         w: 1920,
         h: 1080,
-        color: Colors("#151515").get(),
+      },
+      Shadow: {
+        zIndex: 1,
+        colorTop: Colors("#222351").alpha(0).get(),
+        colorBottom: Colors("#222351").alpha(0).get(),
+        colorLeft: Colors("#222351").alpha(0.8).get(),
+        texture: lng.Tools.getShadowRect(1920, 1080, 0, 0, 0),
       },
 
       SingleMovieDetails: {
+        zIndex: 1,
         flex: {
           direction: "column",
         },
@@ -47,8 +54,8 @@ export default class Movies extends Lightning.Component {
         },
         Poster: {
           x: 1080,
-          y: -720,
-          w: 460,
+          y: -520,
+          w: 560,
           h: 770,
         },
       },
@@ -59,9 +66,14 @@ export default class Movies extends Lightning.Component {
     this._props = { ...this._props, ...props };
 
     const { title, description, imgSrc } = this._props;
-    console.log(imgSrc);
 
     this.patch({
+      Background: {
+        w: 960,
+        x: 960,
+        h: 1080,
+        src: imgSrc,
+      },
       SingleMovieDetails: {
         Title: {
           text: {
@@ -73,21 +85,26 @@ export default class Movies extends Lightning.Component {
             text: description,
           },
         },
-        Poster: {
-          src: imgSrc,
-        },
+        // Poster: {
+        //   src: imgSrc,
+        // },
       },
     });
+    //   w: 960,
+    //   h: 1080,
+
+    //   src: imgSrc,
+    // });
   }
 
   get _MovieDetail() {
     return this.tag("SingleMovieDetails");
   }
+  get _Background() {
+    return this.tag("Background");
+  }
 
   _getFocused() {
     return this.tag("BackButton");
   }
-  //   _init() {
-  //     console.warn(this._MovieDetail);
-  //   }
 }

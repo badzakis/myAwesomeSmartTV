@@ -53,13 +53,12 @@ export default class BackBtn extends Lightning.Component {
   }
 
   _handleEnter() {
-    Router.back();
+    if ((Router.getHistory()?.length ?? 0) === 0) {
+      Router.navigate("home");
+    } else {
+      Router.back();
+    }
   }
-
-  // _handleHover() {
-  //   this._focus();
-  //   this.fireAncestors('$handleStateHover', this.parent.children.indexOf(this), 'BackButton');
-  // }
 
   _handleClick() {
     Router.back();
