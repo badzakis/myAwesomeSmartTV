@@ -1,10 +1,10 @@
 import { Lightning, Colors, Utils } from "@lightningjs/sdk";
 import BackBtn from "../../components/BackButton/BackButton";
+import Button from "../../components/Button/Button";
 
 export default class Movies extends Lightning.Component {
   static _template() {
     return {
-      //   ...super.template(),
       collision: true,
       w: 1920,
       h: 1080,
@@ -52,15 +52,27 @@ export default class Movies extends Lightning.Component {
             textColor: Colors("#FFFFFF").get(),
           },
         },
-        WatchNowBtn: {
+        Button: {
+          type: Button,
+          collision: true,
+          rect: true,
           x: 100,
-          y: 150,
-          text: {
-            text: "WATCH NOW >",
-            fontSize: 28,
-            lineHeight: 31,
-            wordWrapWidth: 698,
-            textColor: Colors("#FFFFFF").get(),
+          y: 157,
+          w: 286,
+          h: 78,
+          props: {
+            buttonIcon: Utils.asset("icons/play-button.svg"),
+            iconWidth: 28,
+            iconHeight: 28,
+            color: Colors("#2F2F2F").get(),
+            radius: 40,
+            buttonLabel: "WATCH NOW",
+            fontSize: 20,
+            width: 286,
+            h: 67,
+            // callback: () => {
+            //   Router.navigate("player");
+            // },
           },
         },
       },
@@ -92,11 +104,6 @@ export default class Movies extends Lightning.Component {
         },
       },
     });
-    //   w: 960,
-    //   h: 1080,
-
-    //   src: imgSrc,
-    // });
   }
 
   get _MovieDetail() {
@@ -105,8 +112,40 @@ export default class Movies extends Lightning.Component {
   get _Background() {
     return this.tag("Background");
   }
+  get _Button() {
+    return this.tag("Button");
+  }
 
-  _getFocused() {
+  get _BackButton() {
     return this.tag("BackButton");
+  }
+  _firstActive() {
+    this._setState("Button");
+  }
+
+  _active() {
+    this._setState("Button");
+  }
+  static _states() {
+    return [
+      class Button extends this {
+        _getFocused() {
+          return this._Button;
+        }
+
+        _handleUp() {
+          this._setState("BackButton");
+        }
+      },
+      class BackButton extends this {
+        _getFocused() {
+          return this._BackButton;
+        }
+
+        _handleDown() {
+          this._setState("Button");
+        }
+      },
+    ];
   }
 }
