@@ -1,4 +1,3 @@
-import lng from "@lightningjs/core";
 import { Colors, Lightning, Router, Utils } from "@lightningjs/sdk";
 import colors from "../../../reskin/colors.json";
 

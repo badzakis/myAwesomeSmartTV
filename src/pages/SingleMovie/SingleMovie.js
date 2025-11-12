@@ -1,4 +1,4 @@
-import { Lightning, Colors, Utils } from "@lightningjs/sdk";
+import { Lightning, Colors, Utils, Router } from "@lightningjs/sdk";
 import BackBtn from "../../components/BackButton/BackButton";
 import Button from "../../components/Button/Button";
 
@@ -70,9 +70,9 @@ export default class Movies extends Lightning.Component {
             fontSize: 20,
             width: 286,
             h: 67,
-            // callback: () => {
-            //   Router.navigate("player");
-            // },
+            callback: () => {
+              Router.navigate("player");
+            },
           },
         },
       },
@@ -89,6 +89,7 @@ export default class Movies extends Lightning.Component {
         w: 960,
         x: 960,
         h: 1080,
+        // color: Colors("#2F2F2F").get(),
         src: imgSrc,
       },
       SingleMovieDetails: {

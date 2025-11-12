@@ -1,10 +1,10 @@
 import { Lightning, Router, Utils } from "@lightningjs/sdk";
-import Row from "../components/Row/Row.js";
-import Column from "../components/Column/Column.js";
-import { movies } from "../data/movies.js";
-import { series } from "../data/series.js";
-import { channels } from "../data/channels.js";
-import PosterCard from "../components/PosterCard/PosterCard.js";
+import Row from "../../components/Row/Row.js";
+import Column from "../../components/Column/Column.js";
+import { movies } from "../../data/movies.js";
+import { series } from "../../data/series.js";
+import { channels } from "../../data/channels.js";
+import PosterCard from "../../components/PosterCard/PosterCard.js";
 
 export default class Home extends Lightning.Component {
   static _template() {

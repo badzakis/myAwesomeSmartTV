@@ -1,5 +1,5 @@
 import { Lightning, Utils, Router } from "@lightningjs/sdk";
-import BackBtn from "../components/BackButton/BackButton";
+import BackBtn from "../../components/BackButton/BackButton";
 export default class Settings extends Lightning.Component {
   static _template() {
     return {
