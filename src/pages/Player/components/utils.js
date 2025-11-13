@@ -1,4 +1,4 @@
-import PlayerButtons from "./components/PlayerButtons/PlayerButtons";
+import PlayerButtons from "./PlayerButtons/PlayerButtons";
 
 export const formatTimeHMS = (seconds) => {
   const hours = floorStringPad(seconds / 3600);

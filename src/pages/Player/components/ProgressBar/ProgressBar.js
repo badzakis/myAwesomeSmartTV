@@ -1,6 +1,6 @@
-import { Colors, Lightning } from '@lightningjs/sdk';
+import { Colors, Lightning } from "@lightningjs/sdk";
 
-export default class ProgressBar extends Lightning.Component {
+export default class ProgressBarWrapper extends Lightning.Component {
   _props = { enterCallback: () => {}, index: -1, interval: null };
   static _template() {
     return {
@@ -15,16 +15,17 @@ export default class ProgressBar extends Lightning.Component {
   }
 
   get _BackgroundBar() {
-    return this.tag('BackgroundBar');
+    return this.tag("BackgroundBar");
   }
 
   get _Progress() {
-    return this.tag('Progress');
+    return this.tag("Progress");
   }
 
   set props(props) {
     this._props = { ...this._props, ...props };
-    const { backgroundBarColor, progressColor, width, height, flexItem } = this._props;
+    const { backgroundBarColor, progressColor, width, height, flexItem } =
+      this._props;
 
     this.patch({
       flexItem: flexItem ? flexItem : {},
@@ -51,7 +52,7 @@ export default class ProgressBar extends Lightning.Component {
   }
 
   progress(progress) {
-    this._Progress.setSmooth('w', progress * this._props.width);
+    this._Progress.setSmooth("w", progress * this._props.width);
   }
 
   _clearProgressInterval() {
