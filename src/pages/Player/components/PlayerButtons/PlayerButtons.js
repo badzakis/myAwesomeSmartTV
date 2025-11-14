@@ -1,6 +1,6 @@
-import { Colors, Utils, VideoPlayer } from '@lightningjs/sdk';
-import lng from '@lightningjs/core';
-import colors from '../../../../../reskin/colors.json';
+import { Colors, Utils, VideoPlayer } from "@lightningjs/sdk";
+import lng from "@lightningjs/core";
+import colors from "../../../../../reskin/colors.json";
 
 export default class PlayerButtons extends lng.Component {
   _props = {
@@ -14,10 +14,14 @@ export default class PlayerButtons extends lng.Component {
       h: 100,
       w: 120,
       zIndex: 5,
-      flex: { direction: 'row', justifyContent: 'center', alignItems: 'center' },
+      flex: {
+        direction: "row",
+        justifyContent: "center",
+        alignItems: "center",
+      },
       Button: {
         collision: true,
-        flex: { direction: 'row', alignItems: 'center' },
+        flex: { direction: "row", alignItems: "center" },
         h: 90,
         Icon: {
           color: Colors(colors.unfocus).alpha(0.6).get(),
@@ -27,57 +31,74 @@ export default class PlayerButtons extends lng.Component {
   }
 
   set props(props) {
-    console.log('asdf', props);
+    console.log("asdf", props);
     this._props = { ...this._props, ...props };
   }
 
   get _Button() {
-    return this.tag('Button');
+    return this.tag("Button");
   }
 
   get _Icon() {
-    return this.tag('Icon');
+    return this.tag("Icon");
   }
 
   _enable() {
     const { buttonInfo } = this._props;
-    const width = buttonInfo.label === 'pause' ? 90 : 66;
-    const height = buttonInfo.label === 'pause' ? 90 : 66;
+    const width = buttonInfo.label === "pause" ? 90 : 66;
+    const height = buttonInfo.label === "pause" ? 90 : 66;
     this._Icon.patch({
       // x: buttonInfo.position,
-      texture: lng.Tools.getSvgTexture(Utils.asset(buttonInfo.icon), width, height),
+      texture: lng.Tools.getSvgTexture(
+        Utils.asset(buttonInfo.icon),
+        width,
+        height
+      ),
     });
   }
 
   _active() {
     const { buttonInfo } = this._props;
-    const width = buttonInfo.label === 'pause' ? 90 : 66;
-    const height = buttonInfo.label === 'pause' ? 90 : 66;
-    if (buttonInfo.label === 'pause') {
+    const width = buttonInfo.label === "pause" ? 90 : 66;
+    const height = buttonInfo.label === "pause" ? 90 : 66;
+    if (buttonInfo.label === "pause") {
       this._Icon.patch({
-        texture: lng.Tools.getSvgTexture(VideoPlayer.playing ? Utils.asset('icons/player/commands/pause.svg') : Utils.asset('icons/player/commands/play.svg'), width, height),
+        texture: lng.Tools.getSvgTexture(
+          VideoPlayer.playing
+            ? Utils.asset("icons/player/commands/pause.svg")
+            : Utils.asset("icons/player/commands/play.svg"),
+          width,
+          height
+        ),
       });
     }
   }
-
+  changeIcon(src) {
+    console.log("here");
+    const width = buttonInfo.label === "pause" ? 90 : 66;
+    const height = buttonInfo.label === "pause" ? 90 : 66;
+    this._Icon.patch({
+      texture: lng.Tools.getSvgTexture(Utils.asset(src), width, height),
+    });
+  }
   _handleEnter() {
-    this.fireAncestors('$handleEnter');
+    this.fireAncestors("$handleEnter");
     const { buttonInfo, isStopped } = this._props;
-    this.fireAncestors('$changeFocusOnControl', true);
+    this.fireAncestors("$changeFocusOnControl", true);
     switch (buttonInfo.label) {
-      case 'forward':
+      case "forward":
         this._handleForward();
         break;
-      case 'backward':
+      case "backward":
         this._handleBackward();
         break;
-      case 'pause':
+      case "pause":
         this._handlePause(isStopped);
         break;
-      case 'subtitles':
+      case "subtitles":
         this._handleSubtitles();
         break;
-      case 'back':
+      case "back":
         this.handleBack();
         break;
       default:
@@ -87,17 +108,17 @@ export default class PlayerButtons extends lng.Component {
 
   _handleForward() {
     this._props.isStopped = false;
-    this.fireAncestors('$skippingTime', true);
-    this.fireAncestors('$startStopVideo', false);
+    this.fireAncestors("$skippingTime", true);
+    this.fireAncestors("$startStopVideo", false);
   }
 
   _handleBackward() {
-    this.fireAncestors('$skippingTime', false);
-    this.fireAncestors('$startStopVideo', false);
+    this.fireAncestors("$skippingTime", false);
+    this.fireAncestors("$startStopVideo", false);
   }
 
   handleBack() {
-    this.fireAncestors('$exitVideo')
+    this.fireAncestors("$exitVideo");
   }
 
   _handlePause(isStopped) {
@@ -106,27 +127,35 @@ export default class PlayerButtons extends lng.Component {
 
     if (isPlaying) {
       this._Icon.patch({
-        texture: lng.Tools.getSvgTexture(Utils.asset('icons/player/commands/play.svg'), 60, 60),
+        texture: lng.Tools.getSvgTexture(
+          Utils.asset("icons/player/commands/play.svg"),
+          60,
+          60
+        ),
       });
-      this.fireAncestors('$pauseVideo');
+      this.fireAncestors("$pauseVideo");
     } else {
       this._Icon.patch({
-        texture: lng.Tools.getSvgTexture(Utils.asset('icons/player/commands/pause.svg'), 60, 60),
+        texture: lng.Tools.getSvgTexture(
+          Utils.asset("icons/player/commands/pause.svg"),
+          60,
+          60
+        ),
       });
-      this.fireAncestors('$playVideo');
+      this.fireAncestors("$playVideo");
     }
   }
 
   _handleSubtitles() {
-    this.fireAncestors('$showSubtitles');
+    this.fireAncestors("$showSubtitles");
   }
 
   _handleBackFromPlayer() {
-    this.fireAncestors('$exitVideoFromBackClick');
+    this.fireAncestors("$exitVideoFromBackClick");
   }
 
   _focus() {
-    this.fireAncestors('$handleEnter')
+    this.fireAncestors("$handleEnter");
     this._Icon.patch({
       color: Colors(colors.focus).alpha(1).get(),
     });
@@ -142,10 +171,16 @@ export default class PlayerButtons extends lng.Component {
     const { buttonInfo } = this._props;
     this._focus();
 
-    if (buttonInfo.label === 'back') {
-      this.fireAncestors('$handleStateHover', this.parent.children.indexOf(this));
+    if (buttonInfo.label === "back") {
+      this.fireAncestors(
+        "$handleStateHover",
+        this.parent.children.indexOf(this)
+      );
     } else {
-      this.fireAncestors('$handleItemHover', this.parent.children.indexOf(this));
+      this.fireAncestors(
+        "$handleItemHover",
+        this.parent.children.indexOf(this)
+      );
     }
   }
 
