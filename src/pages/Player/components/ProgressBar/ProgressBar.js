@@ -1,65 +1,93 @@
-import { Colors, Lightning } from "@lightningjs/sdk";
+import { Lightning, Colors } from "@lightningjs/sdk";
+import { ProgressBar } from "@lightningjs/ui-components";
+import lng from "@lightningjs/core";
+
+import colors from "../../../../../reskin/colors.json";
 
 export default class ProgressBarWrapper extends Lightning.Component {
-  _props = { enterCallback: () => {}, index: -1, interval: null };
+  _props = {};
+
   static _template() {
     return {
-      BackgroundBar: {
+      ...super._template(),
+      FocusBorder: {
+        x: -2,
+        y: -2,
+        zIndex: 100,
+      },
+      Circle: {
+        y: -9,
+        zIndex: 100,
         rect: true,
       },
-      Progress: {
-        rect: true,
-        w: 0,
+      ProgressBar: {
+        type: ProgressBar,
       },
     };
   }
 
-  get _BackgroundBar() {
-    return this.tag("BackgroundBar");
+  get _FocusBorder() {
+    return this.tag("FocusBorder");
   }
 
-  get _Progress() {
-    return this.tag("Progress");
+  get _ProgressBar() {
+    return this.tag("ProgressBar");
+  }
+
+  get _Circle() {
+    return this.tag("Circle");
   }
 
   set props(props) {
     this._props = { ...this._props, ...props };
-    const { backgroundBarColor, progressColor, width, height, flexItem } =
-      this._props;
 
-    this.patch({
-      flexItem: flexItem ? flexItem : {},
+    const { marginLeft, marginRight, width, height, progressColor } = props;
+
+    this._ProgressBar.patch({
+      flexItem: {
+        marginLeft,
+        marginRight,
+      },
       w: width,
       h: height,
-      BackgroundBar: {
-        texture: Lightning.Tools.getRoundRect(
-          1404,
-          9,
-          0,
-          0,
-          undefined,
-          true,
-          Colors(backgroundBarColor).alpha(0.2).get()
-        ),
-        h: height,
-        w: width,
-      },
-      Progress: {
-        color: Colors(progressColor).get(),
-        h: height,
+      style: {
+        progressColor,
       },
     });
   }
 
-  progress(progress) {
-    this._Progress.setSmooth("w", progress * this._props.width);
+  _focus() {
+    const { width, height } = this._props;
+    this._FocusBorder.patch({
+      texture: lng.Tools.getRoundRect(
+        width,
+        height,
+        0,
+        2,
+        Colors(colors.focus).get(),
+        false
+      ),
+    });
+    this._Circle.patch({
+      mountX: 0.8,
+      texture: lng.Tools.getRoundRect(
+        21,
+        21,
+        10,
+        3,
+        Colors("#ffffff").get(),
+        true,
+        Colors(colors.focus).get()
+      ),
+    });
   }
 
-  _clearProgressInterval() {
-    clearInterval(this._progressInterval);
-  }
-
-  _inactive() {
-    clearInterval(this._props.interval);
+  _unfocus() {
+    this._FocusBorder.patch({
+      texture: null,
+    });
+    this._Circle.patch({
+      texture: null,
+    });
   }
 }

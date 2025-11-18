@@ -10,24 +10,23 @@ import PlayerButtons from "./components/PlayerButtons/PlayerButtons";
 import { loader, unloader } from "../../components/Player/HLS";
 import ProgressBarWrapper from "./components/ProgressBar/ProgressBar";
 import colors from "../../../reskin/colors.json";
-import Row from "../../components/Row/Row";
 import { formatTimeHMS, playerButtonsVOD } from "./components/utils";
+import HorizontalContainer from "../../components/HorizontalContainer/HorizontalContainer";
 
 const states = ["Back", "Controls"];
 
 export default class Player extends Lightning.Component {
-  _enable() {
-    VideoPlayer.position(0, 0);
-    VideoPlayer.size(1920, 1080);
-    VideoPlayer.consumer(this);
-    VideoPlayer.loader(loader);
-    VideoPlayer.unloader(unloader);
-    VideoPlayer.loop(false);
-    const videoUrl = "https://assets.afcdn.com/video49/20210722/v_645516.m3u8";
-    VideoPlayer.open(videoUrl);
+  _videoSkipTimeSum = 10;
+  _timeInterval;
+  _props = {
+    video_url: "",
+    video_length: 0,
+    current_time: 0,
+  };
 
-    this._setState("Back");
-  }
+  _is_paused = false;
+  _start_time_visible = new Date();
+  _isPlaying = false;
 
   static _template() {
     const superTemplate = super._template ? super._template() : {};
@@ -42,7 +41,7 @@ export default class Player extends Lightning.Component {
         w: 1690,
         x: 0,
         y: 800,
-        // visible: false,
+        visible: false,
         Shadow: {
           zIndex: 1,
           colorTop: Colors("#000000").alpha(0).get(),
@@ -76,19 +75,17 @@ export default class Player extends Lightning.Component {
             Controls: {
               collision: true,
               x: 580,
-              type: Row,
+              type: HorizontalContainer,
               props: {
-                items: playerButtonsVOD.map((btn, index) => ({
-                  ...btn,
-                  x: index * 100,
-                })),
+                items: playerButtonsVOD,
               },
             },
           },
         },
         ProgressWrapper: {
           y: 160,
-          x: 60,
+          x: 100,
+          zIndex: 2,
           collision: true,
           flex: {
             direction: "row",
@@ -111,6 +108,7 @@ export default class Player extends Lightning.Component {
             x: 30,
             w: 1404,
             h: 9,
+            y: 2,
             props: {
               marginLeft: 20,
               marginRight: 20,
@@ -135,72 +133,329 @@ export default class Player extends Lightning.Component {
       },
     };
   }
-  $videoPlayerPlaying() {
-    console.log(this._Controls);
-    this._Controls.children[1].changeIcon("icons/player/commands/pause.svg");
-  }
-  get _BackButton() {
-    return this.tag("BackButton");
-  }
+  //!Controls on player (backward, play/pause, forward btns)
   get _Controls() {
     return this.tag("Controls");
   }
 
-  _disable() {
-    VideoPlayer.clear();
-    VideoPlayer.close();
-    clearInterval(this._timeInterval);
+  //!Back button
+  get _BackBtn() {
+    return this.tag("BackButton");
   }
+
+  //!Wraper
+  get _Wrapper() {
+    return this.tag("Wrapper");
+  }
+  //!Lifecycle event that gets called every time a component becomes active or visible
+  _enable() {
+    // VP position top 0, right 0
+    VideoPlayer.position(0, 0);
+    //VP Size (this case full screen)
+    VideoPlayer.size(1920, 1080);
+    //Defines which Lightning component is consuming media events that are emitted by the VideoPlayer plugin.
+    VideoPlayer.consumer(this);
+    // Stop and continue reproduction of video ragarding video quality. etc..
+    VideoPlayer.loader(loader);
+    VideoPlayer.unloader(unloader);
+    //VP Loop
+    VideoPlayer.loop(true);
+    //VP open selected video
+    VideoPlayer.open("https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8");
+
+    //Set state to Controls
+    this._setState("Controls");
+    //on position 1 which is play/pause btn
+    this._Controls._setFocusedIndex(1);
+
+    //!Set interval for time in progress bar
+    this._timeInterval = setInterval(() => {
+      this.tag("CurrentTime").text = formatTimeHMS(VideoPlayer.currentTime);
+      const endTime = new Date();
+      var timeDiff = endTime - this._start_time_visible; //in ms
+      // strip the ms
+      timeDiff /= 1000;
+      // get seconds
+      var seconds = Math.round(timeDiff);
+      if (seconds >= 10) {
+        this._Wrapper.visible = false;
+      }
+      this._updateProgressBar();
+      this.tag("ProgressBar")._Circle.patch({
+        x: (VideoPlayer.currentTime / VideoPlayer.duration) * 1440,
+      });
+    }, 1000);
+  }
+  //! Helper za PLAY/PAUSE buttone
+  _updatePlayPauseIcon() {
+    const iconPath = this._isPlaying
+      ? "icons/player/commands/pause.svg" // player radi → prikaži PAUSE
+      : "icons/player/commands/play.svg"; // player stoji → prikaži PLAY
+
+    this._Controls.Items.children[1]._Icon.patch({
+      texture: lng.Tools.getSvgTexture(Utils.asset(iconPath), 90, 90),
+    });
+  }
+
+  //!End time on progress bar
+  $videoPlayerDurationChange() {
+    this.tag("EndTime").text = formatTimeHMS(VideoPlayer.duration);
+  }
+
+  //!Play Video and change icon
+  $playVideo() {
+    this._isPlaying = true;
+    VideoPlayer.play();
+    this._updatePlayPauseIcon();
+  }
+
+  //!Pause video and change icon to play-icon
+  $pauseVideo() {
+    this._isPlaying = false;
+    VideoPlayer.pause();
+    this._updatePlayPauseIcon();
+  }
+
+  //!Exit video
+  $exitVideo(e) {
+    if (this._Wrapper.visible) {
+      if ((Router.getHistory()?.length ?? 0) === 0) {
+        Router.navigate("home");
+      } else {
+        this._handleBack(e);
+      }
+    }
+  }
+
+  //!Skip video backward -10s, forward +10s
+  $skippingTime(forward) {
+    this._skipVideo(forward);
+  }
+
+  //! SMTH Related to PlayerButton.js component ???? < =============================
+  $startStopVideo(isStopped) {
+    this._setState("Controls");
+    if (this._Wrapper.visible) {
+      this.$pauseVideo();
+    }
+  }
+
+  //!Some hover state hover
+  $handleStateHover(index) {
+    this._setState(states[index]);
+  }
+
+  //! SKIP METHOD USED IN $skippingTime
+  _skipVideo(forward) {
+    if (forward) {
+      this._videoSkipTimeSum = 10;
+    } else {
+      this._videoSkipTimeSum = -10;
+    }
+
+    this._Wrapper.visible = true;
+    this._start_time_visible = new Date();
+
+    VideoPlayer.skip(this._videoSkipTimeSum);
+
+    this.tag("ProgressBar")._Circle.patch({
+      x: (VideoPlayer.currentTime / VideoPlayer.duration) * 1440,
+    });
+
+    this._updateProgressBar();
+  }
+
+  //!Update progress bar
+  _updateProgressBar() {
+    const currentTime = Math.max(
+      0,
+      Math.min(VideoPlayer.currentTime, VideoPlayer.duration)
+    );
+    const progress = currentTime / VideoPlayer.duration;
+    this.tag("ProgressBar")._ProgressBar.progress = progress;
+    this.tag("CurrentTime").text = formatTimeHMS(currentTime);
+  }
+
+  //! handle used in $exitVideo
   _handleBack() {
     VideoPlayer.clear();
     VideoPlayer.close();
-
     clearInterval(this._timeInterval);
 
     Router.back();
   }
 
+  //! HANDLES UP - LEFT - RIGHT - BOTTOM
+
+  //Handle UP
+  _handleUp() {
+    if (VideoPlayer.playing) {
+      this._setState("Controls");
+      this._isPlaying = true;
+      this._updatePlayPauseIcon();
+    } else {
+      this._setState("Controls");
+      this._isPlaying = false;
+      this._updatePlayPauseIcon();
+    }
+  }
+  //Handle left
+  _handleLeft() {
+    this._Wrapper.visible = true;
+    this._start_time_visible = new Date();
+  }
+  //Handle Right
+  _handleRight() {
+    this._Wrapper.visible = true;
+    this._start_time_visible = new Date();
+  }
+  //Handle Down
+  _handleDown() {
+    this._Wrapper.visible = true;
+    this._start_time_visible = new Date();
+  }
+
+  //!Handle Enter
+  $handleEnter() {
+    this._Wrapper.visible = true;
+    this._start_time_visible = new Date();
+  }
+
+  //! When u have _enable, after loop ends u need also _DISABLE
+  _disable() {
+    VideoPlayer.clear();
+    VideoPlayer.close();
+
+    clearInterval(this._timeInterval);
+  }
+
+  //! I assume that is default state is in Controls
+  $videoPlayerLoadedData() {
+    this._setState("Controls");
+  }
+
+  //! ------------- STATES HANDLERS --------------
   static _states() {
     return [
-      class Back extends this {
-        _enter() {
-          console.log("ENTER STATE: Back");
-          // čisto da vizuelno vidiš promenu
-          this._BackButton.alpha = 1;
-          this._Controls.alpha = 0.5;
-        }
-
-        _getFocused() {
-          return this._BackButton;
-        }
-
-        _handleRight() {
-          console.log("Back: RIGHT pressed -> go to Controls");
-          this._setState("Controls");
-        }
-      },
-
       class Controls extends this {
-        _enter() {
-          console.log("ENTER STATE: Controls");
-          this._BackButton.alpha = 0.5;
-          this._Controls.alpha = 1;
-        }
-
         _getFocused() {
           return this._Controls;
         }
 
         _handleLeft() {
-          console.log("Controls: LEFT pressed -> go to Back");
           this._setState("Back");
+          this._Wrapper.visible = true;
+          this._start_time_visible = new Date();
+        }
+
+        // _handleDown() {
+        //   console.log("Controls > ProgressBar");
+        //   if (this.tag("Wrapper").visible) {
+        //     console.log("VIDLJIVO JE!!");
+        //   } else {
+        //     if (VideoPlayer.playing) {
+        //       console.log(
+        //         "NIJE VIDLJIVO, PLAYER RADI I TREBA DA IMA PAUZA IKONU"
+        //       );
+        //       this._Controls.Items.children[1]._Icon.patch({
+        //         texture: lng.Tools.getSvgTexture(
+        //           Utils.asset("icons/player/commands/pause.svg"),
+        //           90,
+        //           90
+        //         ),
+        //       });
+        //     } else {
+        //       console.log(
+        //         "NIJE VIDLJIVO, PLAYER NE RADI I TREBA DA IMA PLAY IKONU"
+        //       );
+        //       this._Controls.Items.children[1]._Icon.patch({
+        //         texture: lng.Tools.getSvgTexture(
+        //           Utils.asset("icons/player/commands/play.svg"),
+        //           90,
+        //           90
+        //         ),
+        //       });
+        //     }
+        //   }
+
+        //   this._setState("ProgressBar");
+        //   this._Wrapper.visible = true;
+        //   this._start_time_visible = new Date();
+        // }
+
+        _handleDown() {
+          console.log("Controls > ProgressBar");
+
+          if (!this.tag("Wrapper").visible) {
+            // Wrapper je bio sakriven → samo uskladi ikonu sa stanjem
+            this._updatePlayPauseIcon();
+          }
+
+          this._setState("ProgressBar");
+          this._Wrapper.visible = true;
+          this._start_time_visible = new Date();
+        }
+
+        _handleUp() {
+          this.tag("Wrapper").visible = !this.tag("Wrapper").visible;
+
+          if (this.tag("Wrapper").visible) {
+            this._setState("Controls");
+            this._updatePlayPauseIcon();
+            this._start_time_visible = new Date();
+          }
+        }
+      },
+
+      class ProgressBar extends this {
+        _getFocused() {
+          return this.tag("ProgressBar");
+        }
+
+        _handleLeft() {
+          this._skipVideo(false);
+        }
+
+        _handleRight() {
+          this._skipVideo(true);
+        }
+
+        _handleUp() {
+          this._setState("Controls");
+        }
+
+        _handleEnter() {
+          const wasPlaying = this._isPlaying; // state BEFORE CLICK
+
+          if (wasPlaying) {
+            this.$pauseVideo();
+          } else {
+            this.$playVideo();
+            this.tag("Wrapper").visible = true;
+            this._start_time_visible = new Date();
+          }
+        }
+      },
+
+      class Back extends this {
+        _getFocused() {
+          return this.tag("BackButton");
+        }
+
+        _handleRight() {
+          this._setState("Controls");
+          this._Wrapper.visible = true;
+          this._start_time_visible = new Date();
+        }
+
+        _handleDown() {
+          console.log("Back > ProgressBar");
+
+          this._setState("ProgressBar");
+          this._Wrapper.visible = true;
+          this._start_time_visible = new Date();
         }
       },
     ];
-  }
-  $exitVideo(e) {
-    if (this.tag("Wrapper").visible) {
-      this._handleBack(e);
-    }
   }
 }

@@ -43,12 +43,11 @@ export default class PlayerButtons extends lng.Component {
     return this.tag("Icon");
   }
 
-  _enable() {
+  _active() {
     const { buttonInfo } = this._props;
     const width = buttonInfo.label === "pause" ? 90 : 66;
     const height = buttonInfo.label === "pause" ? 90 : 66;
     this._Icon.patch({
-      // x: buttonInfo.position,
       texture: lng.Tools.getSvgTexture(
         Utils.asset(buttonInfo.icon),
         width,
@@ -57,30 +56,6 @@ export default class PlayerButtons extends lng.Component {
     });
   }
 
-  _active() {
-    const { buttonInfo } = this._props;
-    const width = buttonInfo.label === "pause" ? 90 : 66;
-    const height = buttonInfo.label === "pause" ? 90 : 66;
-    if (buttonInfo.label === "pause") {
-      this._Icon.patch({
-        texture: lng.Tools.getSvgTexture(
-          VideoPlayer.playing
-            ? Utils.asset("icons/player/commands/pause.svg")
-            : Utils.asset("icons/player/commands/play.svg"),
-          width,
-          height
-        ),
-      });
-    }
-  }
-  changeIcon(src) {
-    console.log("here");
-    const width = buttonInfo.label === "pause" ? 90 : 66;
-    const height = buttonInfo.label === "pause" ? 90 : 66;
-    this._Icon.patch({
-      texture: lng.Tools.getSvgTexture(Utils.asset(src), width, height),
-    });
-  }
   _handleEnter() {
     this.fireAncestors("$handleEnter");
     const { buttonInfo, isStopped } = this._props;
@@ -126,22 +101,10 @@ export default class PlayerButtons extends lng.Component {
     const isPlaying = VideoPlayer.playing;
 
     if (isPlaying) {
-      this._Icon.patch({
-        texture: lng.Tools.getSvgTexture(
-          Utils.asset("icons/player/commands/play.svg"),
-          60,
-          60
-        ),
-      });
+      // video trenutno SVIRA → sad ga pauziramo
       this.fireAncestors("$pauseVideo");
     } else {
-      this._Icon.patch({
-        texture: lng.Tools.getSvgTexture(
-          Utils.asset("icons/player/commands/pause.svg"),
-          60,
-          60
-        ),
-      });
+      // video trenutno NE svira → sad ga pustamo
       this.fireAncestors("$playVideo");
     }
   }
