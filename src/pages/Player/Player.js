@@ -24,7 +24,6 @@ export default class Player extends Lightning.Component {
     current_time: 0,
   };
 
-  _is_paused = false;
   _start_time_visible = new Date();
   _isPlaying = false;
 
@@ -162,6 +161,7 @@ export default class Player extends Lightning.Component {
     VideoPlayer.loop(true);
     //VP open selected video
     VideoPlayer.open("https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8");
+    this.$playVideo();
 
     //Set state to Controls
     this._setState("Controls");
@@ -285,36 +285,6 @@ export default class Player extends Lightning.Component {
     Router.back();
   }
 
-  //! HANDLES UP - LEFT - RIGHT - BOTTOM
-
-  //Handle UP
-  _handleUp() {
-    if (VideoPlayer.playing) {
-      this._setState("Controls");
-      this._isPlaying = true;
-      this._updatePlayPauseIcon();
-    } else {
-      this._setState("Controls");
-      this._isPlaying = false;
-      this._updatePlayPauseIcon();
-    }
-  }
-  //Handle left
-  _handleLeft() {
-    this._Wrapper.visible = true;
-    this._start_time_visible = new Date();
-  }
-  //Handle Right
-  _handleRight() {
-    this._Wrapper.visible = true;
-    this._start_time_visible = new Date();
-  }
-  //Handle Down
-  _handleDown() {
-    this._Wrapper.visible = true;
-    this._start_time_visible = new Date();
-  }
-
   //!Handle Enter
   $handleEnter() {
     this._Wrapper.visible = true;
@@ -348,61 +318,21 @@ export default class Player extends Lightning.Component {
           this._start_time_visible = new Date();
         }
 
-        // _handleDown() {
-        //   console.log("Controls > ProgressBar");
-        //   if (this.tag("Wrapper").visible) {
-        //     console.log("VIDLJIVO JE!!");
-        //   } else {
-        //     if (VideoPlayer.playing) {
-        //       console.log(
-        //         "NIJE VIDLJIVO, PLAYER RADI I TREBA DA IMA PAUZA IKONU"
-        //       );
-        //       this._Controls.Items.children[1]._Icon.patch({
-        //         texture: lng.Tools.getSvgTexture(
-        //           Utils.asset("icons/player/commands/pause.svg"),
-        //           90,
-        //           90
-        //         ),
-        //       });
-        //     } else {
-        //       console.log(
-        //         "NIJE VIDLJIVO, PLAYER NE RADI I TREBA DA IMA PLAY IKONU"
-        //       );
-        //       this._Controls.Items.children[1]._Icon.patch({
-        //         texture: lng.Tools.getSvgTexture(
-        //           Utils.asset("icons/player/commands/play.svg"),
-        //           90,
-        //           90
-        //         ),
-        //       });
-        //     }
-        //   }
-
-        //   this._setState("ProgressBar");
-        //   this._Wrapper.visible = true;
-        //   this._start_time_visible = new Date();
-        // }
-
         _handleDown() {
           console.log("Controls > ProgressBar");
-          this.tag("Wrapper").visible = !this.tag("Wrapper").visible;
-
-          if (this.tag("Wrapper").visible) {
-            this._setState("ProgressBar");
-            this._updatePlayPauseIcon();
-            this._start_time_visible = new Date();
-          } else {
-            this._setState("ProgressBar");
-          }
+          this._Wrapper.visible = true;
+          this._setState("ProgressBar");
+          this._updatePlayPauseIcon();
+          this._start_time_visible = new Date();
         }
 
         _handleUp() {
-          this.tag("Wrapper").visible = !this.tag("Wrapper").visible;
+          this._Wrapper.visible = !this._Wrapper.visible;
 
-          if (this.tag("Wrapper").visible) {
+          if (this._Wrapper.visible) {
             this._setState("Controls");
-            this._updatePlayPauseIcon();
             this._start_time_visible = new Date();
+            this._updatePlayPauseIcon();
           }
         }
       },
@@ -434,6 +364,12 @@ export default class Player extends Lightning.Component {
             this.tag("Wrapper").visible = true;
             this._start_time_visible = new Date();
           }
+        }
+        _handleDown() {
+          this._Wrapper.visible = true;
+          this._setState("ProgressBar");
+          this._updatePlayPauseIcon();
+          this._start_time_visible = new Date();
         }
       },
 
