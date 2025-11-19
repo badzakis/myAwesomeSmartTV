@@ -385,15 +385,15 @@ export default class Player extends Lightning.Component {
 
         _handleDown() {
           console.log("Controls > ProgressBar");
+          this.tag("Wrapper").visible = !this.tag("Wrapper").visible;
 
-          if (!this.tag("Wrapper").visible) {
-            // Wrapper je bio sakriven → samo uskladi ikonu sa stanjem
+          if (this.tag("Wrapper").visible) {
+            this._setState("ProgressBar");
             this._updatePlayPauseIcon();
+            this._start_time_visible = new Date();
+          } else {
+            this._setState("ProgressBar");
           }
-
-          this._setState("ProgressBar");
-          this._Wrapper.visible = true;
-          this._start_time_visible = new Date();
         }
 
         _handleUp() {
